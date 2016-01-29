@@ -1,0 +1,5 @@
+Scarab Version 3.3
+
+Clear feature working (Shaun fixed it XD)
+Added link grabber to pull links as you go through page
+Saving now saves it as a html, printed out text reflects this (break,p,href tags added to text window to allow this)

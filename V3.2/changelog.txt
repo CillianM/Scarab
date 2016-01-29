@@ -1,0 +1,6 @@
+Scarab Version 3.2
+
+Added comments to allow better understanding of eachmethod(add more if need be)
+Added Open feature (file is whatever is in text field)
+improved save feature 
+small adjustments to search feature
