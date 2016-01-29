@@ -19,7 +19,7 @@ class Scarab extends JFrame implements ActionListener
 	JButton save;
 	JButton open;
 	JButton clear;
-	ArrayList<String> page;
+	JLabel summary;
 	int startList;
 	int endList;
 	
@@ -27,7 +27,7 @@ class Scarab extends JFrame implements ActionListener
 	{
 		//constructors to set actual window
 		super("Scarab");
-		setSize(400,300);
+		setSize(900,600);
 		setResizable(true);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -41,6 +41,7 @@ class Scarab extends JFrame implements ActionListener
 		clear = new JButton("Clear");
 		search = new JButton("Search");	
 		textField = new JTextField("",20);
+		summary = new JLabel("Enter term to search/save/open");
 		
 		//scrollbar for when the window is too small
 		JScrollPane scroller = new JScrollPane(textArea,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -53,6 +54,7 @@ class Scarab extends JFrame implements ActionListener
 		
 		//add items in desired order
 		panel.setLayout(new BorderLayout());
+		toolBar.add(summary);
 		toolBar.add(textField);
 		toolBar.add(search);
 		toolBar.add(clear);
@@ -85,9 +87,9 @@ class Scarab extends JFrame implements ActionListener
 		{
 			try
 			{
-				File file = new File(textField.getText() + ".txt");
+				File file = new File(textField.getText() + ".html");
 				Scanner scan = new Scanner(file);
-				System.out.println("reading file " + textField.getText() + ".txt");
+				System.out.println("reading file " + textField.getText() + ".html");
 				while(scan.hasNextLine())
 				{
 					printToField(scan.nextLine());
@@ -95,7 +97,7 @@ class Scarab extends JFrame implements ActionListener
 			}
 			catch(FileNotFoundException f)
 			{
-				System.out.println("Error reading file " + textField.getText() + ".txt");
+				System.out.println("Error reading file " + textField.getText() + ".html");
 			}
 		}
 		
@@ -127,39 +129,60 @@ class Scarab extends JFrame implements ActionListener
 				String input = textField.getText();
 				if(input.length() >= 1)
 				{
+					//make input more "wiki friendly" 
 					input = input.replaceAll(" ", "_").toLowerCase();
-					printToField("https://en.wikipedia.org/wiki/" + input);
+					
+					//allow user to see link constructed and make it clickable for html page
+					printToField("<a href =\"https://en.wikipedia.org/wiki/" + input +"\">" + input + "</a><br>");
 					URL my_url = new URL("https://en.wikipedia.org/wiki/" + input);
 					
+					//Parser object for getting page and extraction
 					Parser parse = new Parser(my_url);
-	            
-					ArrayList<String> webPage = parse.get(my_url);
-					page = webPage;
+					ArrayList<String> webPage = parse.get(my_url); //get page from constructed url
+					
+					//get range that the desired text lies in
 					int [] range = parse.getArray(webPage);
 					startList = range[0];
 					endList = range[1];
+					
+					//tag for html compatibility when saved
 					printToField("<p>");
+					
+					//print off actual page to textField
 					for(int i = startList; i < endList; i++)
 					{
+						//extraction process, remove tags, trim, get links 
 						String tmp = parse.extract(webPage.get(i));
 						if(tmp.length() > 4)
-							printToField(tmp + "<br>");
+							printToField(tmp + "<br>"); // br tag for html newline
 					}
+					
+					//Print off any links saved from extraction
 					printToField("<h1>\n" + "Here are some links collected from the page:</h1>");
 					ArrayList <String> links = parse.returnLinks();
 					for(int j = 0; j < links.size(); j++)
 					{
+						//contruct link to be clickable in html page
 						String tmp = "<a href =\"https://en.wikipedia.org" + links.get(j) +"\">" + links.get(j) + "</a><br>";
 						printToField(tmp);
 					}
+					//end html text
 					printToField("</p>");
 				}
 			}
-
+			
+			//catch any exceptions thrown
 			catch (Exception ex) 
 			{
 			  System.out.println(ex);
 			}
 		}
 	}
+	
+	//return current version (i have this because i like to feel official alright? get off my back :P) 
+	public String version()
+	{
+		return "Scarab version 3.3";
+	}
+	
 }
