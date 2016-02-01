@@ -13,9 +13,21 @@ public class Parser
   ArrayList<String> links = new ArrayList<>();
   
   //basic constructors
-  public Parser(URL url)
+  public Parser(String input)
   {
-    this.url = url;
+    try
+	{
+		//make input more "wiki friendly" 
+		input = input.replaceAll(" ", "_").toLowerCase();
+		URL my_url = new URL("https://en.wikipedia.org/wiki/" + input);
+		url = my_url;
+	}	
+
+	//catch any exceptions thrown
+	catch (Exception ex) 
+	{
+	  System.out.println("The following error occured: \n" + ex);
+	}
   }
 
   public Parser()

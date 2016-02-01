@@ -20,8 +20,6 @@ class Scarab extends JFrame implements ActionListener
 	JButton open;
 	JButton clear;
 	JLabel summary;
-	int startList;
-	int endList;
 	Scarab currentInstantion;
 	
 	public Scarab()
@@ -118,30 +116,11 @@ class Scarab extends JFrame implements ActionListener
 		else if(e.getSource() == search)
 		{
 			clearField();
-			textArea.setText("");
 			String input = textField.getText();
 			if(input.length() >= 1)
 			{
-				try
-				{
-					//make input more "wiki friendly" 
-					input = input.replaceAll(" ", "_").toLowerCase();
-					
-					//allow user to see link constructed and make it clickable for html page
-					printToField("<a href =\"https://en.wikipedia.org/wiki/" + input +"\">" + input + "</a><br>");
-
-					URL my_url = new URL("https://en.wikipedia.org/wiki/" + input);
-					
-					//Parser object for getting page and extraction
-					Parser parse = new Parser(my_url);
-					parse.search(currentInstantion);
-				}	
-
-				//catch any exceptions thrown
-				catch (Exception ex) 
-				{
-				  System.out.println("The following error occured: \n" + ex);
-				}
+				Parser parse = new Parser(input);
+				parse.search(currentInstantion);
 			}
 		}
 	}
