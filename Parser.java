@@ -22,7 +22,53 @@ public class Parser
   {
     this.url = null;
   }
+
+  public void search(Scarab scarab)
+  {
+	try
+	{
+
+		ArrayList<String> webPage = get(url); //get page from constructed url
+		
+		//get range that the desired text lies in
+		int [] range = getArray(webPage);
+		startList = range[0];
+		endList = range[1];
+		
+		//tag for html compatibility when saved
+		scarab.printToField("<p>");
+		
+		//print off actual page to textField
+		for(int i = startList; i < endList; i++)
+		{
+			//extraction process, remove tags, trim, get links 
+			String tmp = extract(webPage.get(i));
+			if(tmp.length() > 4)
+				scarab.printToField(tmp + "<br>"); // br tag for html newline
+		}
+		
+		//Print off any links saved from extraction
+		scarab.printToField("<h1>\n" + "Here are some links collected from the page:</h1>");
+		ArrayList <String> links = returnLinks();
+		for(int j = 0; j < links.size(); j++)
+		{
+			//contruct link to be clickable in html page
+			String tmp = "<a href =\"https://en.wikipedia.org" + links.get(j) +"\">" + links.get(j) + "</a><br>";
+			scarab.printToField(tmp);
+		}
+		//end html text
+		scarab.printToField("</p>");
+	}
+   
+
+	//catch any exceptions thrown
+	catch (Exception ex) 
+	{
+	  System.out.println("The following error occured: \n" + ex);
+	}
+   }
   
+
   public ArrayList<String> returnLinks()
   {
 	  return links;
@@ -46,7 +92,7 @@ public class Parser
           return page;
 
       } catch (Exception ex) {
-          System.out.println("Uh Oh! AN Error Occured!");
+          System.out.println("The following error occured: \n" + ex);
       }
 
       return null;

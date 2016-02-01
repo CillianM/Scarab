@@ -22,6 +22,7 @@ class Scarab extends JFrame implements ActionListener
 	JLabel summary;
 	int startList;
 	int endList;
+	Scarab currentInstantion;
 	
 	public Scarab()
 	{
@@ -33,7 +34,7 @@ class Scarab extends JFrame implements ActionListener
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		//instantiate variables
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		textArea = new JTextArea();
 		toolBar = new JToolBar();
 		save = new JButton("Save");
@@ -64,7 +65,13 @@ class Scarab extends JFrame implements ActionListener
 		panel.add(scroller,BorderLayout.CENTER);
 		add(panel);
 		setVisible(true);
+		System.out.println(version());
 		
+	}
+
+	void getInstantiation(Scarab oneToUse)
+	{
+		currentInstantion = oneToUse;
 	}
 	
 	//prints desired text to field
@@ -85,30 +92,18 @@ class Scarab extends JFrame implements ActionListener
 		//if it's open get the filename from the input and pull text from it 
 		if(e.getSource() == open)
 		{
-			try
-			{
-				File file = new File(textField.getText() + ".html");
-				Scanner scan = new Scanner(file);
-				System.out.println("reading file " + textField.getText() + ".html");
-				while(scan.hasNextLine())
-				{
-					printToField(scan.nextLine());
-				}
-			}
-			catch(FileNotFoundException f)
-			{
-				System.out.println("Error reading file " + textField.getText() + ".html");
-			}
+			fileManager fm = new fileManager(textField.getText() + ".html");
+			fm.open(currentInstantion);
 		}
 		
-		//SUPPOSED TO clear the text field
+		//Clears the text field
 		if(e.getSource() == clear)
 		{
 			textArea.setText(null);
 			textField.setText(null);
 		}
 		
-		//Calls to save class to save file
+		//Calls to save method to save file
 		else if(e.getSource() == save)
 		{
 			if(textField.getText().length() > 0)
@@ -119,62 +114,34 @@ class Scarab extends JFrame implements ActionListener
 		}
 		
 		//creates appropriate url and sends it away to be parsed
-		//Worth looking over and cleaning up
+		//Notes: Worth looking over and cleaning up, move it into parser
 		else if(e.getSource() == search)
 		{
-			 try
+			clearField();
+			textArea.setText("");
+			String input = textField.getText();
+			if(input.length() >= 1)
 			{
-				clearField();
-				textArea.setText("");
-				String input = textField.getText();
-				if(input.length() >= 1)
+				try
 				{
 					//make input more "wiki friendly" 
 					input = input.replaceAll(" ", "_").toLowerCase();
 					
 					//allow user to see link constructed and make it clickable for html page
 					printToField("<a href =\"https://en.wikipedia.org/wiki/" + input +"\">" + input + "</a><br>");
+
 					URL my_url = new URL("https://en.wikipedia.org/wiki/" + input);
 					
 					//Parser object for getting page and extraction
 					Parser parse = new Parser(my_url);
-					ArrayList<String> webPage = parse.get(my_url); //get page from constructed url
-					
-					//get range that the desired text lies in
-					int [] range = parse.getArray(webPage);
-					startList = range[0];
-					endList = range[1];
-					
-					//tag for html compatibility when saved
-					printToField("<p>");
-					
-					//print off actual page to textField
-					for(int i = startList; i < endList; i++)
-					{
-						//extraction process, remove tags, trim, get links 
-						String tmp = parse.extract(webPage.get(i));
-						if(tmp.length() > 4)
-							printToField(tmp + "<br>"); // br tag for html newline
-					}
-					
-					//Print off any links saved from extraction
-					printToField("<h1>\n" + "Here are some links collected from the page:</h1>");
-					ArrayList <String> links = parse.returnLinks();
-					for(int j = 0; j < links.size(); j++)
-					{
-						//contruct link to be clickable in html page
-						String tmp = "<a href =\"https://en.wikipedia.org" + links.get(j) +"\">" + links.get(j) + "</a><br>";
-						printToField(tmp);
-					}
-					//end html text
-					printToField("</p>");
+					parse.search(currentInstantion);
+				}	
+
+				//catch any exceptions thrown
+				catch (Exception ex) 
+				{
+				  System.out.println("The following error occured: \n" + ex);
 				}
-			}
-			
-			//catch any exceptions thrown
-			catch (Exception ex) 
-			{
-			  System.out.println(ex);
 			}
 		}
 	}

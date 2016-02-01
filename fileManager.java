@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.FileNotFoundException;
 
 class fileManager
 {
@@ -39,5 +40,23 @@ class fileManager
 		{
 			System.out.println("Error creating file");
 		}
+	}
+
+	void open(Scarab scarab)
+	{
+		try
+			{
+				File file = new File(loc);
+				Scanner scan = new Scanner(file);
+				System.out.println("reading file " + loc);
+				while(scan.hasNextLine())
+				{
+					scarab.printToField(scan.nextLine());
+				}
+			}
+			catch(FileNotFoundException f)
+			{
+				System.out.println("Error reading file " + loc);
+			}
 	}
 }
