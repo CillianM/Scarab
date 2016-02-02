@@ -3,34 +3,34 @@ package ieminisham.dcu.redbrick.httpwww.scarab;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
+import android.view.View;
 import android.widget.TextView;
 
-import java.net.URL;
+import java.util.ArrayList;
 
-public class SearchActivity extends AppCompatActivity  {
+public class SearchActivity extends AppCompatActivity {
 
+    ArrayList<String> links;
+    TextView globalView;
+    private static final long serialVersionUID = 1L;
 
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
         Intent searchIntent = getIntent();
-        String input = searchIntent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        String input = searchIntent.getStringExtra("searchKey");
 
         TextView textView = (TextView) findViewById(R.id.content);
         textView.setMovementMethod(new ScrollingMovementMethod());
-        textView.setMovementMethod(new LinkMovementMethod());
-        textView.setTextSize(5);
+        textView.setTextSize(10);
         Parser parse = new Parser(input,textView);
+        links = parse.search();
+        globalView = textView;
 
-        parse.search();
     }
 
     @Override
@@ -53,5 +53,25 @@ public class SearchActivity extends AppCompatActivity  {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+    }
+
+    public void showLinks(View view) {
+        // Do something in response to button
+        String [] linkArray = new String [links.size()];
+        for(int i =0; i < links.size(); i++)
+        {
+            linkArray[i] = links.get(i);
+        }
+
+        Intent linkIntent = new Intent(this, LinkActivity.class);
+        linkIntent.putExtra("linkKey", linkArray);
+        startActivity(linkIntent);
+        overridePendingTransition(R.anim.pull_in_top, R.anim.push_out_bottom);
     }
 }

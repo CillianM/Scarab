@@ -1,13 +1,10 @@
 package ieminisham.dcu.redbrick.httpwww.scarab;
 
-import android.os.AsyncTask;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Arrays;
 
 
 
@@ -15,9 +12,8 @@ public class Parser
 {
     URL url = null;
     TextView textView = null;
-    int startList = 0;
-    int endList = 0;
     ArrayList<String> links = new ArrayList<>();
+    ArrayList<String> webPage = new ArrayList<>();
 
     //basic constructors
     public Parser(String input,TextView instantiation)
@@ -26,8 +22,7 @@ public class Parser
         {
             //make input more "wiki friendly"
             input = input.replaceAll(" ", "_").toLowerCase();
-            URL my_url = new URL("https://en.wikipedia.org/wiki/" + input);
-            url = my_url;
+            url = new URL("https://en.wikipedia.org/wiki/" + input);
             textView = instantiation;
         }
 
@@ -37,55 +32,19 @@ public class Parser
         }
     }
 
-    public Parser()
-    {
-        this.url = null;
-    }
-
-    public void search()
+    public ArrayList<String> search()
     {
         try
         {
+            get(url); //get page from constructed url
 
-            ArrayList<String> webPage = get(url); //get page from constructed url
-
-            //get range that the desired text lies in
-            int [] range = getArray(webPage);
-            startList = range[0];
-            endList = range[1];
-            textView.append("STARTLIST IS: " + startList+"\n");
-            textView.append("ENDLIST IS: " + endList+"\n");
             //print off actual page to textField
-            int count = 0;
             for(int i = 0; i < webPage.size(); i++)
             {
-                //extraction process, remove tags, trim, get links
-                String tmp = extract(webPage.get(i));
-                if(tmp.length() < 2 && count == 1)
-                    ;
-                else if(tmp.length() < 2)
-                {
-                    count = 1;
-                    textView.append(tmp + "\n"); // br tag for html newline
-                }
-                else
-                {
-                    textView.append(tmp + "\n"); // br tag for html newline
-                    count = 0;
-                }
+                textView.append(webPage.get(i));
             }
 
-            //Print off any links saved from extraction
-            textView.append("Here are some links collected from the page:\n");
-            ArrayList <String> links = returnLinks();
-            for(int j = 0; j < links.size(); j++)
-            {
-                //contruct link to be clickable in html page
-                String tmp = "<a href =\"https://en.wikipedia.org" + links.get(j) +"\">" + links.get(j) + "</a>" + "\n";
-                textView.append(tmp);
-            }
-            //end html text
-            textView.append("\n");
+            return links;
         }
 
 
@@ -93,96 +52,63 @@ public class Parser
         catch (Exception ex) {
             System.out.println("The following error occured: \n" + ex);
         }
-    }
-
-
-    public ArrayList<String> returnLinks()
-    {
-        return links;
-    }
-
-    //get the url's data and put it in an arraylist to be returned
-    public ArrayList<String> get(URL inputUrl)
-    {
-        ArrayList<String> page = new ArrayList<>();
-        try
-        {
-            url = inputUrl;
-            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-            String strTemp = "";
-            while(null != (strTemp = br.readLine()))
-            {
-                page.add(strTemp);
-
-            }
-
-            return page;
-
-        } catch (Exception ex) {
-            textView.append("The following error occured: \n" + ex);
-        }
 
         return null;
     }
 
-    //set the url
-    public void set(URL inputUrl)
+    //get the url's data and put it in an arraylist to be returned
+    public void get(URL inputUrl)
     {
-        url = inputUrl;
-    }
-
-    //gets the area that the data we want lies in
-    public int [] getArray(ArrayList<String> list)
-    {
-        int start = 0;
-        int end = 0;
-        String openBrace = "<body>";
-        String closeBrace = "</body>";
-
-        for(int i = 0; i < list.size(); i++)
+        try
         {
-            String temp = list.get(i);
-            if(temp.equals(openBrace))
+            url = inputUrl;
+            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+            String strTemp;
+            int count = 0;
+            while(null != (strTemp = br.readLine()))
             {
-                start = i + 1;
-                startList = start;
+                strTemp = extract(strTemp);
+                if(strTemp.equals("ReferencesEdit"))
+                    break;
+                if(strTemp.length() < 2 && count == 0)
+                {
+                    count = 1;
+                    webPage.add(strTemp + "\n");
+                }
+                else if(strTemp.length() > 20)
+                {
+                    webPage.add(strTemp + "\n");
+                    count = 0;
+                }
             }
-
-
         }
 
-        for(int j = start; j < list.size(); j++)
+        catch (Exception ex)
         {
-            String temp = list.get(j);
-            if(temp.equals(closeBrace))
-            {
-                end = j;
-                endList = end;
-                break;
-            }
-            extract(temp);
+            textView.append("The following error occured: \n" + ex);
         }
-
-        int [] array = {start,end};
-        return array;
     }
 
     //removes braces, basic cleanup of data
     public String extract(String line)
     {
+
         if(line.contains("href"))
             getLink(line);
-        line = line.replaceAll("\\<.*?>","");
+
+        line = line.replaceAll("<.*?>","");
         line = line.trim();
-        //if(line.contains("{")|line.contains("}")|line.contains("$"))
-            //line = "";
+
+        if(line.contains("{")|line.contains("}")|line.contains("$"))
+            return "";
+
         return line;
     }
 
     public void getLink(String potLink)
     {
-        int start = 0;
-        int end = 0;
+        int start;
+        int end;
         for(int i = 0; i < potLink.length(); i++)
         {
             //pointless after this point
@@ -203,6 +129,9 @@ public class Parser
                             {
                                 end = k;
                                 potLink = potLink.substring(start,end);
+                                //add it to our arraylist of links if it looks like an address of somekind
+                                if(potLink.contains("/wiki"))
+                                    links.add(potLink);
                                 break;
                             }
                         }
@@ -211,8 +140,6 @@ public class Parser
                 }
             }
         }
-        //add it to our arraylist of links if it looks like an address of somekind
-        if(potLink.charAt(0) == '/')
-            links.add(potLink);
+
     }
 }

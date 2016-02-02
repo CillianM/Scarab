@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
 
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -50,7 +51,11 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SearchActivity.class);
         EditText editText = (EditText) findViewById(R.id.searchBar);
         String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
+        if(message.length() > 1)
+        {
+            intent.putExtra("searchKey", message);
+            startActivity(intent);
+            overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+        }
     }
 }
