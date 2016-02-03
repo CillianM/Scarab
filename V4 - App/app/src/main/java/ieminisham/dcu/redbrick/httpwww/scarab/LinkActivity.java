@@ -6,11 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 
 public class LinkActivity extends AppCompatActivity {
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,7 +22,6 @@ public class LinkActivity extends AppCompatActivity {
         TextView linkView = (TextView) findViewById(R.id.linkCollection);
         linkView.setMovementMethod(new ScrollingMovementMethod());
         linkView.setTextSize(15);
-
         for(int i =0; i < linkArray.length; i++)
         {
             String tmp = "<a href =\"https://en.wikipedia.org" + linkArray[i] +"\">" + linkArray[i] + "</a>\n";
@@ -61,6 +60,12 @@ public class LinkActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.push_out_top, R.anim.pull_in_bottom);
     }
 
+
+    public void close(View view) {
+        // Do something in response to button
+        super.onBackPressed();
+        overridePendingTransition(R.anim.pull_in_bottom, R.anim.push_out_top);
+    }
 
 
 }

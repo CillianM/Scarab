@@ -21,7 +21,7 @@
 
     <ImageButton
         android:id="@+id/linkButton"
-        android:background="#10b29b"
+        android:background="@color/blue_green"
         android:src="@drawable/down"
         android:contentDescription="@string/arrow_description"
         android:onClick="showLinks"

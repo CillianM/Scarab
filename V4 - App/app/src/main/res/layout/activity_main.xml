@@ -8,17 +8,8 @@
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
     android:weightSum="1"
     android:orientation="vertical"
-    android:background="#10b29b"
+    android:background="#FFFFFF"
     >
-
-    <ProgressBar
-        android:id="@+id/loadingPanel"
-        android:layout_width="81dp"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:gravity="center_horizontal"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.09" />
 
     <EditText
         android:id="@+id/searchBar"
@@ -37,11 +28,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_send"
-        android:onClick="search"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/searchBar"
-        />
+        android:onClick="search" />
 
 
 </LinearLayout>

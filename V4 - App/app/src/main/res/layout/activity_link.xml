@@ -10,14 +10,31 @@
     tools:context="ieminisham.dcu.redbrick.httpwww.scarab.LinkActivity"
     >
 
+    <ImageButton
+        android:id="@+id/linkButton"
+        android:background="@color/blue_green"
+        android:src="@drawable/up"
+        android:contentDescription="@string/arrow_description"
+        android:onClick="close"
+
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="15dp"
+        />
 
     <TextView
         android:id="@+id/linkCollection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical"
+        android:scrollbars="horizontal"
         android:autoLink="web"
         android:linksClickable="true"
-        />
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentEnd="false" />
 
 </RelativeLayout>
