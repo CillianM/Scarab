@@ -66,7 +66,7 @@ public class SearchActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        finish();
         overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
     }
 

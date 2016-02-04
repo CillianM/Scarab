@@ -86,7 +86,7 @@ public class Parser
 
         catch (Exception ex)
         {
-            textView.append("The following error occured: \n" + ex);
+            textView.append("Looks like there was a problem! Check the query you entered and try again \n For the more tech savvy here is the error: \n" + ex);
         }
     }
 

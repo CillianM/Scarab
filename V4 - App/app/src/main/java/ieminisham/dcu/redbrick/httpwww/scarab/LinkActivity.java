@@ -51,7 +51,7 @@ public class LinkActivity extends AppCompatActivity {
 
     public void close(View view) {
         // Do something in response to button
-        super.onBackPressed();
+        finish();
         overridePendingTransition(R.anim.pull_in_bottom, R.anim.push_out_top);
     }
 
