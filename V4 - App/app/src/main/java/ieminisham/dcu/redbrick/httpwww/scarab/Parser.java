@@ -81,6 +81,7 @@ public class Parser
                     count = 0;
                 }
             }
+            br.close();
         }
 
         catch (Exception ex)
