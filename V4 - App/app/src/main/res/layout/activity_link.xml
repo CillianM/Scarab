@@ -24,17 +24,23 @@
         android:layout_marginBottom="15dp"
         />
 
-    <TextView
+    <!--<TextView
         android:id="@+id/linkCollection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scrollbars="horizontal"
-        android:autoLink="web"
         android:linksClickable="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="25dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="10dp"
-        android:layout_alignParentEnd="false" />
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="true" />-->
+
+    <ListView android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/mainListView"
+        android:layout_marginTop="25dp">
+    </ListView>
 
 </RelativeLayout>

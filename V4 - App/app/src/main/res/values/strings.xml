@@ -8,4 +8,5 @@
     <string name="title_activity_search">Search Result</string>
     <string name="arrow_description">down arrow</string>
     <string name="title_activity_link2">Relevant Links</string>
+    <string name="link_type">link type</string>
 </resources>

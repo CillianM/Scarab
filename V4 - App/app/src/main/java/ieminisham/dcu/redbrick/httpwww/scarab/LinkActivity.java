@@ -1,13 +1,20 @@
 package ieminisham.dcu.redbrick.httpwww.scarab;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
+import android.text.util.Linkify;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ArrayAdapter;
 
 
 public class LinkActivity extends AppCompatActivity {
@@ -15,51 +22,32 @@ public class LinkActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_link);
+        //get rid of back button (this page is supposed to be an extension of the search page so the up arrow does just fine to convery this)
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(false);
 
         Intent searchIntent = getIntent();
-        String [] linkArray = searchIntent.getStringArrayExtra("linkKey");
+        String[] linkArray = searchIntent.getStringArrayExtra("linkKey");
 
-        TextView linkView = (TextView) findViewById(R.id.linkCollection);
-        linkView.setMovementMethod(new ScrollingMovementMethod());
-        linkView.setTextSize(15);
-        for(int i =0; i < linkArray.length; i++)
+        //create listview
+        ListView mainListView = (ListView) findViewById(R.id.mainListView);
+        //create listener for each link in list
+        mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
-            String tmp = "<a href =\"https://en.wikipedia.org" + linkArray[i] +"\">" + linkArray[i] + "</a>\n";
-            linkView.append(tmp);
+            //on item click create a url and open it in the browser
+            public void onItemClick(AdapterView<?> l, View v, int position, long id) {
+            String chosenURL =(String) l.getItemAtPosition(position);
+            chosenURL = "https://en.wikipedia.org" + chosenURL;
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(chosenURL));
+            startActivity(i);
         }
+        });
 
-
+        linkArrayAdaptor listAdapter = new linkArrayAdaptor(this, linkArray);
+        mainListView.setAdapter(listAdapter);
 
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_search, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(R.anim.push_out_top, R.anim.pull_in_bottom);
-    }
-
 
     public void close(View view) {
         // Do something in response to button

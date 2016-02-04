@@ -16,7 +16,7 @@
 
     <style name="ThemeOverlay.AppTheme.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <!-- title text color -->
-        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:textColorPrimary">@color/white</item>
         <!-- subtitle text color -->
         <item name="android:textColorSecondary">?android:textColorPrimary</item>
         <!-- action menu item text color -->
@@ -29,7 +29,7 @@
         <!-- popup menu background - NEVER "android:background" !!! in themes -->
         <item name="android:colorBackground">@color/blue_green</item>
         <!-- popup menu item text color -->
-        <item name="android:textColorPrimary">@color/blue_green</item>
+        <item name="android:textColorPrimary">@color/white</item>
     </style>
 
 </resources>

@@ -1,6 +1,7 @@
 package ieminisham.dcu.redbrick.httpwww.scarab;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -9,12 +10,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.net.URL;
 import java.util.ArrayList;
 
 public class SearchActivity extends AppCompatActivity {
 
     ArrayList<String> links;
-    TextView globalView;
+    String searchedURL;
     private static final long serialVersionUID = 1L;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,14 +31,14 @@ public class SearchActivity extends AppCompatActivity {
         textView.setTextSize(10);
         Parser parse = new Parser(input,textView);
         links = parse.search();
-        globalView = textView;
+        searchedURL = input;
+
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_search, menu);
+        menu.add(0,1,0,"Go To Source");
         return true;
     }
 
@@ -46,6 +48,13 @@ public class SearchActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if(id == 1)
+        {
+            searchedURL = "https://en.wikipedia.org/wiki/" + searchedURL;
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(searchedURL));
+            startActivity(i);
+        }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
