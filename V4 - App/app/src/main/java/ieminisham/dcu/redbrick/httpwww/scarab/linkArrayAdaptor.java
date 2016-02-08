@@ -36,7 +36,11 @@ public View getView(int position, View convertView, ViewGroup parent) {
         imageView.setImageResource(R.drawable.image);
         } else if (s.contains("/wiki")) {
         imageView.setImageResource(R.drawable.webpage);
-        } else {
+        }
+        else if(s.contains(".txt")) {
+        imageView.setImageResource(R.drawable.text);
+        }
+        else{
         imageView.setImageResource(R.drawable.unknown);
         }
 

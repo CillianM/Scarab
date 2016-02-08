@@ -66,4 +66,10 @@ public class MainActivity extends AppCompatActivity {
             overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
         }
     }
+
+    public void openList(View view) {
+        Intent intent = new Intent(this, OpenActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+    }
 }

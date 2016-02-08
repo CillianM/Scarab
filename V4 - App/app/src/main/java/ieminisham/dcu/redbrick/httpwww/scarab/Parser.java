@@ -64,21 +64,31 @@ public class Parser
             url = inputUrl;
             BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
             String strTemp;
-            int count = 0;
+            int breakCount = 0;
+            int bufferCount = 0;
             while(null != (strTemp = br.readLine()))
             {
+                bufferCount++;
+                if(bufferCount >= 600) {
+                    webPage.add("\nSee source to view entire page");
+                    break;
+                }
+
                 strTemp = extract(strTemp);
+
                 if(strTemp.equals("ReferencesEdit"))
                     break;
-                if(strTemp.length() < 2 && count == 0)
+
+                if(strTemp.length() < 2 && breakCount == 0)
                 {
-                    count = 1;
+                    breakCount = 1;
                     webPage.add(strTemp + "\n");
+
                 }
                 else if(strTemp.length() > 20)
                 {
                     webPage.add(strTemp + "\n");
-                    count = 0;
+                    breakCount = 0;
                 }
             }
             br.close();
@@ -100,7 +110,7 @@ public class Parser
         line = line.replaceAll("<.*?>","");
         line = line.trim();
 
-        if(line.contains("{")|line.contains("}")|line.contains("$"))
+        if(line.contains("{")|line.contains("}")|line.contains("$")|line.contains("^"))
             return "";
 
         return line;

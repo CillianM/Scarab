@@ -30,5 +30,12 @@
         android:text="@string/button_send"
         android:onClick="search" />
 
+    <Button
+        android:id="@+id/openButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_open"
+        android:onClick="openList" />
+
 
 </LinearLayout>
